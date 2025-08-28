@@ -72,7 +72,7 @@ jobs:
                   ssh -v -o StrictHostKeyChecking=no \
                        -p $SSH_PORT \
                        "$SSH_USERNAME@$SSH_HOST" \
-                       "echo '${{ secrets.KCR_PASSWORD }}' | docker login ${{ secrets.KCR_REGISTRY_URL }} -u '${{ secrets.KCR_USER }}' --password-stdin && \
+                       "echo '${{ secrets.KCR_PASSWORD }}' | sudo docker login ${{ secrets.KCR_REGISTRY_URL }} -u '${{ secrets.KCR_USER }}' --password-stdin && \
                         sudo docker stop ml_vision_dev || true && \
                         sudo docker rm ml_vision_dev || true && \
                         sudo docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} && \
