@@ -77,7 +77,6 @@ jobs:
                         sudo docker rm ml_vision_dev || true && \
                         sudo docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} && \
                         sudo docker run -d --name ml_vision_dev \
-                          --env-file /home/ubuntu/.env.ml-vision \
                           -p 8080:8080 \
                           --gpus all \
                           ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}" 2>&1
