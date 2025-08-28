@@ -19,6 +19,7 @@ jobs:
             SERVICE_NAME: ml-vision
             REGISTRY: ${{ secrets.KCR_REGISTRY_URL }}
             IMAGE_NAME: ${{ secrets.KCR_ML_VISION_DEV_IMAGE_NAME }}
+            
 
         steps:
             - name: Checkout code
@@ -115,21 +116,21 @@ jobs:
             - name: Checkout infra-test repo
               uses: actions/checkout@v4
               with:
-                  repository: ${{ secrets.INFRA_REPO_NAME }}  # 예: username/infra-test
+                  repository: ${{ secrets.REPO_NAME }}  # 예: username/infra-test
                   token: ${{ secrets.REPO_TOKEN }}
-                  path: infra-test
+                  path: ${{ secrets.REPO_PATH }}
 
             - name: Update ML Vision Helm values.yaml
               run: |
                   # ml-vision-chart의 values.yaml에서 이미지 태그 업데이트
-                  sed -i "s|tag:.*|tag: \"${{ env.IMAGE_TAG }}\"|" infra-test/helm-chart/ml-vision-chart/values.yaml
+                  sed -i "s|tag:.*|tag: \"${{ env.IMAGE_TAG }}\"|" ${{ secrets.REPO_PATH }}/helm-chart/ml-vision-chart/values.yaml
 
             - name: Commit & Push ML Vision changes
               run: |
-                  cd infra-test
+                  cd ${{ secrets.REPO_PATH }}
                   git config user.name "github-actions"
                   git config user.email "actions@github.com"
-                  git add helm-chart/ml-vision-chart/values.yaml
+                  git add ${{ secrets.REPO_PATH }}/helm-chart/ml-vision-chart/values.yaml
                   git commit -m "Update ML Vision image tag to ${{ env.IMAGE_TAG }}"
                   git push origin main
 
@@ -143,9 +144,9 @@ jobs:
             - name: Checkout infra-test repo
               uses: actions/checkout@v4
               with:
-                  repository: ${{ secrets.INFRA_REPO_NAME }}
+                  repository: ${{ secrets.REPO_NAME }}
                   token: ${{ secrets.REPO_TOKEN }}
-                  path: infra-test
+                  path: ${{ secrets.REPO_PATH }}
 
             - name: Update CronJob schedule to production
               run: |
@@ -154,9 +155,9 @@ jobs:
 
             - name: Commit & Push schedule changes
               run: |
-                  cd infra-test
+                  cd ${{ secrets.REPO_PATH }}
                   git config user.name "github-actions"
                   git config user.email "actions@github.com"
-                  git add helm-chart/ml-vision-chart/values.yaml
+                  git add ${{ secrets.REPO_PATH }}/helm-chart/ml-vision-chart/values.yaml
                   git commit -m "Update CronJob schedule to production (twice daily)"
                   git push origin main
